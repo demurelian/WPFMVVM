@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:WPFMVVM"
         xmlns:vm="clr-namespace:WPFMVVM.ViewModels"
         xmlns:cmd="clr-namespace:WPFMVVM.Infrastructure.Commands"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
         Title="{Binding Title}" 
         Height="450" Width="800">
@@ -34,7 +35,13 @@
             </StatusBarItem>
         </StatusBar>
         <TabControl>
-            <TabItem Header="Вкладка 1">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <fa:ImageAwesome Icon="File" Height="20" Margin="0,0,15,0" Foreground="Red"/>
+                        <TextBlock Text="Вкладка 1"/>
+                    </StackPanel>
+                </TabItem.Header>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition />
