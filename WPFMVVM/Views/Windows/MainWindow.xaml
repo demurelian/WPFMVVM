@@ -22,6 +22,7 @@
                 <MenuItem Header="Выход" Command="{StaticResource CloseApplicationCommand}">
                 </MenuItem>
             </MenuItem>
+
             <MenuItem Header="Помощь">
                 <MenuItem Header="О программе"/>
             </MenuItem>
