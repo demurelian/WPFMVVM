@@ -29,6 +29,7 @@ namespace WPFMVVM.ViewModels
             get => _Title;
             set => Set(ref _Title, value);
         }
+        /// <summary>Модель графика</summary>
         private OxyPlot.PlotModel _MyPlotModel;
         public OxyPlot.PlotModel MyPlotModel
         {
@@ -60,6 +61,7 @@ namespace WPFMVVM.ViewModels
             #region Команды
             CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecute, CanCloseApplicationCommandExecute);
             #endregion
+            #region График
             var data_points = new List<MyDataPoint>((int)(360 / 0.1));
             for (var x = 0d; x <= 360; x += 0.1)
             {
@@ -74,7 +76,7 @@ namespace WPFMVVM.ViewModels
             MyPlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Bottom });
 
             MyPlotModel.Series.Add(new OxyPlot.Series.LineSeries { ItemsSource = TestDataPoints, DataFieldX = "XValue", DataFieldY = "YValue", Color = OxyColor.FromRgb(255, 0, 0) });
-
+            #endregion
         }
     }
 }
