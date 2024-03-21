@@ -23,7 +23,7 @@ namespace WPFMVVM.Models
         public DateTime Date { get; set; }
         public int Count { get; set; }
     }
-    internal struct DataPoint
+    internal struct MyDataPoint
     {
         public double XValue { get; set; }
         public double YValue { get; set; }
