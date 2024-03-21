@@ -25,19 +25,37 @@ namespace WMConsole
             {
                 var line = data_reader.ReadLine();
                 if (string.IsNullOrWhiteSpace(line)) continue;
-                yield return line;
+                yield return line.Replace("Korea,","Korea - ");
             }
         }
         private static DateTime[] GetDates() => GetDataLines()
             .First()
             .Split(',')
-            .Skip(4)
+            .Skip(4)//Провинция, страна, долгота, широта
             .Select(s => DateTime.Parse(s, CultureInfo.InvariantCulture))//культура даты - формат, независимый от системы
             .ToArray();
+
+        //Плюс типа IEnumerable - ленивые методы, которые не тянут все данные
+        //Тут используем кортеж данных
+        private static IEnumerable<(string Country, string Province, int[] Counts)> GetData()
+        {
+            var lines = GetDataLines()
+                .Skip(1)//заголовок
+                .Select(line => line.Split(','));
+            foreach(var row in lines)
+            {
+                var province = row[0].Trim();
+                var country = row[1].Trim(' ','"');
+                var counts = row.Skip((row[4].Equals("-68.2385")) ? 5 : 4)//Очень странный баг, что заходило в 4й столбец с координатой в одном месте
+                    .Select(int.Parse)
+                    .ToArray();
+                yield return (country, province, counts);
+            }
+        }
         static void Main(string[] args)
         {
-            var dates = GetDates();
-            Console.WriteLine(string.Join("\r\n", dates));
+            var russia_data = GetData().First(v => v.Country.Equals("Russia", StringComparison.OrdinalIgnoreCase));
+            Console.WriteLine(string.Join("\r\n", GetDates().Zip(russia_data.Counts, (date, count) => $"{date:dd-MM}: {count}")));
 
             Console.ReadLine();
         }
