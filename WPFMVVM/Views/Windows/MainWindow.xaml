@@ -39,7 +39,18 @@
         </StatusBar>
         <TabControl>
             <TabItem Header="Студенты">
-                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <GroupBox Grid.Column="0" Header="Группы">
+                        <ListBox ItemsSource="{Binding Groups}" DisplayMemberPath="Name"/>
+                    </GroupBox>
+                    <GroupBox Grid.Column="1" Header="Студенты">
+                        <DataGrid></DataGrid>
+                    </GroupBox>
+                </Grid>
             </TabItem>
             <TabItem Header="График">
                 <oxy:PlotView Model="{Binding MyPlotModel}">
