@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using WPFMVVM.Infrastructure.Commands;
 using WPFMVVM.Models;
 using WPFMVVM.ViewModels.Base;
 using OxyPlot;
+using System.Collections.ObjectModel;
+using WPFMVVM.Models.Decanat;
 
 namespace WPFMVVM.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
+        public ObservableCollection<Group> Groups { get; set; }
         #region Свойства
         private IEnumerable<MyDataPoint> _TestDataPoints;
         /// <summary>Тестовый набор данных для визуализации графиков</summary>
@@ -76,6 +74,22 @@ namespace WPFMVVM.ViewModels
             MyPlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Bottom });
 
             MyPlotModel.Series.Add(new OxyPlot.Series.LineSeries { ItemsSource = TestDataPoints, DataFieldX = "XValue", DataFieldY = "YValue", Color = OxyColor.FromRgb(255, 0, 0) });
+            #endregion
+            #region Студенты
+            var students = Enumerable.Range(1, 10).Select(i => new Student
+            {
+                Name = $"Name {i}",
+                Surname = $"Surname {i}",
+                Patronymic = $"Patronymic {i}",
+                Birthday = DateTime.Now,
+                Rating = 0
+            });
+            var groups = Enumerable.Range(1, 20).Select(i => new Group
+            {
+                Name = $"Группа {i}",
+                Students = new ObservableCollection<Student>(students)
+            });
+            Groups = new ObservableCollection<Group>(groups);
             #endregion
         }
     }
