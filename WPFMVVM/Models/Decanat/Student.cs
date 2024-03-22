@@ -14,10 +14,12 @@ namespace WPFMVVM.Models.Decanat
         public string Patronymic { get; set; }
         public DateTime Birthday { get; set; }
         public double Rating { get; set; }
+        public string Description { get; set; }
     }
     internal class Group
     {
         public string Name { get; set; }
         public ICollection<Student> Students { get; set; }
+        public string Description { get; set; }
     }
 }
