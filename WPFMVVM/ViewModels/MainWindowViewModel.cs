@@ -21,6 +21,7 @@ namespace WPFMVVM.ViewModels
             set => Set(ref _SelectedGroup, value);
         }
         #region Свойства
+        #region Тестовый набор данных для графика
         private IEnumerable<MyDataPoint> _TestDataPoints;
         /// <summary>Тестовый набор данных для визуализации графиков</summary>
         public IEnumerable<MyDataPoint> TestDataPoints
@@ -28,6 +29,8 @@ namespace WPFMVVM.ViewModels
             get => _TestDataPoints;
             set => Set(ref _TestDataPoints, value);
         }
+        #endregion
+        #region Заголовок окна
         private string _Title = "Анализ статистики";
         /// <summary>Заголовок окна</summary>
         public string Title
@@ -35,6 +38,8 @@ namespace WPFMVVM.ViewModels
             get => _Title;
             set => Set(ref _Title, value);
         }
+        #endregion
+        #region Модель графика
         /// <summary>Модель графика</summary>
         private PlotModel _MyPlotModel;
         public PlotModel MyPlotModel
@@ -52,7 +57,34 @@ namespace WPFMVVM.ViewModels
             set => Set(ref _Status, value);
         }
         #endregion
+        #endregion
         #region Команды
+        #region CreateGroupCommand
+        public ICommand CreateGroupCommand { get; }
+        private bool CanCreateGroupCommandExecute(object p) => true;
+        private void OnCreateGroupCommandExecute(object p)
+        {
+            var group_max_index = Groups.Count + 1;
+            var new_group = new Group
+            {
+                Name = $"Группа {group_max_index}",
+                Students = new ObservableCollection<Student>()
+            };
+            Groups.Add(new_group);
+        }
+        #endregion
+        #region DeleteGroupCommand
+        public ICommand DeleteGroupCommand { get; }
+        private bool CanDeleteDroupCommandExecute(object p) => p is Group group && Groups.Contains(group);
+        private void OnDeleteGroupCommandExecute(object p)
+        {
+            if (!(p is Group group)) return;
+            var group_index = Groups.IndexOf(group);
+            Groups.Remove(group);
+            if (group_index < Groups.Count)
+                SelectedGroup = Groups[group_index];
+        }
+        #endregion
         #region CloseApplicationCommand
         public ICommand CloseApplicationCommand { get; }
         private void OnCloseApplicationCommandExecute(object p)
@@ -60,12 +92,14 @@ namespace WPFMVVM.ViewModels
             Application.Current.Shutdown();
         }
         private bool CanCloseApplicationCommandExecute(object p) => true;
-        #endregion
+        #endregion    
         #endregion
         public MainWindowViewModel()
         {
             #region Команды
             CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecute, CanCloseApplicationCommandExecute);
+            CreateGroupCommand = new LambdaCommand(OnCreateGroupCommandExecute, CanCreateGroupCommandExecute);
+            DeleteGroupCommand = new LambdaCommand(OnDeleteGroupCommandExecute, CanDeleteDroupCommandExecute);
             #endregion
             #region График
             var data_points = new List<MyDataPoint>((int)(360 / 0.1));
