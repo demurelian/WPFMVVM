@@ -12,6 +12,14 @@ namespace WPFMVVM.ViewModels
     internal class MainWindowViewModel : ViewModel
     {
         public ObservableCollection<Group> Groups { get; set; }
+
+        private Group _SelectedGroup;
+        /// <summary>Выбранная группы</summary>
+        public Group SelectedGroup
+        {
+            get => _SelectedGroup;
+            set => Set(ref _SelectedGroup, value);
+        }
         #region Свойства
         private IEnumerable<MyDataPoint> _TestDataPoints;
         /// <summary>Тестовый набор данных для визуализации графиков</summary>
@@ -28,8 +36,8 @@ namespace WPFMVVM.ViewModels
             set => Set(ref _Title, value);
         }
         /// <summary>Модель графика</summary>
-        private OxyPlot.PlotModel _MyPlotModel;
-        public OxyPlot.PlotModel MyPlotModel
+        private PlotModel _MyPlotModel;
+        public PlotModel MyPlotModel
         {
             get => _MyPlotModel;
             set => Set(ref _MyPlotModel, value);
