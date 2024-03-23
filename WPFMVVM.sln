@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFMVVM", "WPFMVVM\WPFMVVM.csproj", "{792B7606-F49B-4A44-8475-C055DC7A06DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFMVVM", "WPFMVVM\WPFMVVM.csproj", "{792B7606-F49B-4A44-8475-C055DC7A06DE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{999EDE12-5FA8-4176-9264-43EB671215A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WMConsole", "Tests\WMConsole\WMConsole.csproj", "{4E2CABCB-15AB-49C6-A842-AC9BB8287DB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WMWpfTest", "WMWpfTest\WMWpfTest.csproj", "{0F52EC75-ABF2-4BE8-B52B-55ED403EA548}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +21,21 @@ Global
 		{792B7606-F49B-4A44-8475-C055DC7A06DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{792B7606-F49B-4A44-8475-C055DC7A06DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{792B7606-F49B-4A44-8475-C055DC7A06DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E2CABCB-15AB-49C6-A842-AC9BB8287DB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E2CABCB-15AB-49C6-A842-AC9BB8287DB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E2CABCB-15AB-49C6-A842-AC9BB8287DB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E2CABCB-15AB-49C6-A842-AC9BB8287DB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F52EC75-ABF2-4BE8-B52B-55ED403EA548}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F52EC75-ABF2-4BE8-B52B-55ED403EA548}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F52EC75-ABF2-4BE8-B52B-55ED403EA548}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F52EC75-ABF2-4BE8-B52B-55ED403EA548}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4E2CABCB-15AB-49C6-A842-AC9BB8287DB1} = {999EDE12-5FA8-4176-9264-43EB671215A0}
+		{0F52EC75-ABF2-4BE8-B52B-55ED403EA548} = {999EDE12-5FA8-4176-9264-43EB671215A0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1602A801-6D94-4419-AB08-72E97A4E2920}
