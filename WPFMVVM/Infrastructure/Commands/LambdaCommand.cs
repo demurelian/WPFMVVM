@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WPFMVVM.Infrastructure.Commands.Base;
+﻿using WPFMVVM.Infrastructure.Commands.Base;
 
 namespace WPFMVVM.Infrastructure.Commands
 {

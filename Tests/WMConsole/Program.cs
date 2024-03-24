@@ -1,7 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Net.NetworkInformation;
-using System.Linq;
+﻿using System.Globalization;
 
 namespace WMConsole
 {
