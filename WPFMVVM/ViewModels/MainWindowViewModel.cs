@@ -129,7 +129,8 @@ namespace WPFMVVM.ViewModels
             var groups = Enumerable.Range(1, 20).Select(i => new Group
             {
                 Name = $"Группа {i}",
-                Students = new ObservableCollection<Student>(students)
+                Students = new ObservableCollection<Student>(students),
+                Description = $"Описание {i} группы"
             });
             Groups = new ObservableCollection<Group>(groups);
             #endregion
