@@ -6,6 +6,8 @@ using WPFMVVM.ViewModels.Base;
 using OxyPlot;
 using System.Collections.ObjectModel;
 using WPFMVVM.Models.Decanat;
+using System.Windows.Data;
+using System.ComponentModel;
 
 namespace WPFMVVM.ViewModels
 {
@@ -19,14 +21,54 @@ namespace WPFMVVM.ViewModels
                 Patronymic = $"Отчество {i}"
             });
         public ObservableCollection<Group> Groups { get; set; }
+
+        private readonly CollectionViewSource _SelectedGroupStudentCollection = new CollectionViewSource();
+        public ICollectionView SelectedGroupStudentsCollection => _SelectedGroupStudentCollection?.View;
+        private void OnStudentsFilter(Object sender, FilterEventArgs e)
+        {
+            if (!(e.Item is Student student))
+            {
+                e.Accepted = false;
+                return;
+            }
+            if (student.Name is null || student.Surname is null)
+            {
+                e.Accepted = false;
+                return;
+            }
+            var filter_text = _StudentFilterText;
+            if (string.IsNullOrEmpty(filter_text)) return;
+
+            if (student.Name.Contains(filter_text, StringComparison.OrdinalIgnoreCase)) return;
+            if (student.Surname.Contains(filter_text, StringComparison.OrdinalIgnoreCase)) return;
+            if (student.Patronymic.Contains(filter_text, StringComparison.OrdinalIgnoreCase)) return;
+
+            e.Accepted = false;
+        }
         #region Свойства
+        /// <summary>Фильтр студентов</summary>
+        private string _StudentFilterText;
+        public string StudentFilterText
+        {
+            get => _StudentFilterText;
+            set
+            {
+                if (!Set(ref _StudentFilterText, value)) return;
+                _SelectedGroupStudentCollection.View.Refresh();
+            }
+        }
         #region Выбранная группа
         private Group _SelectedGroup;
         /// <summary>Выбранная группы</summary>
         public Group SelectedGroup
         {
             get => _SelectedGroup;
-            set => Set(ref _SelectedGroup, value);
+            set
+            {
+                if (!Set(ref _SelectedGroup, value)) return;
+                _SelectedGroupStudentCollection.Source = value?.Students;
+                OnPropertyChanged(nameof(SelectedGroupStudentsCollection));
+            }
         }
         #endregion
         #region Тестовый набор данных для графика
@@ -142,6 +184,8 @@ namespace WPFMVVM.ViewModels
             });
             Groups = new ObservableCollection<Group>(groups);
             #endregion
+            _SelectedGroupStudentCollection.Filter += OnStudentsFilter;
+            _SelectedGroupStudentCollection.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
         }
     }
 }
