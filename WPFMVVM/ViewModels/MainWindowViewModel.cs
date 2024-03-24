@@ -11,8 +11,16 @@ namespace WPFMVVM.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
+        public IEnumerable<Student> TestStudentsGenerate => Enumerable.Range(1, App.IsDesignMode ? 10 : 100_000)
+            .Select(i => new Student
+            {
+                Name = $"Имя {i}",
+                Surname = $"Фамилия {i}",
+                Patronymic = $"Отчество {i}"
+            });
         public ObservableCollection<Group> Groups { get; set; }
-
+        #region Свойства
+        #region Выбранная группа
         private Group _SelectedGroup;
         /// <summary>Выбранная группы</summary>
         public Group SelectedGroup
@@ -20,7 +28,7 @@ namespace WPFMVVM.ViewModels
             get => _SelectedGroup;
             set => Set(ref _SelectedGroup, value);
         }
-        #region Свойства
+        #endregion
         #region Тестовый набор данных для графика
         private IEnumerable<MyDataPoint> _TestDataPoints;
         /// <summary>Тестовый набор данных для визуализации графиков</summary>
