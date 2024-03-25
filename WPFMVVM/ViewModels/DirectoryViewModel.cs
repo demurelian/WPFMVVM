@@ -31,7 +31,7 @@ namespace WPFMVVM.ViewModels
                 try
                 {
                     var files = _DirectoryInfo
-                        .EnumerateDirectories()
+                        .EnumerateFiles()
                         .Select(file => new FileViewModel(file.FullName));
                     return files;
                 }
@@ -48,7 +48,7 @@ namespace WPFMVVM.ViewModels
             {
                 try
                 {
-                    return SubDirectories.Cast<object>().Concat(Files.Cast<object>());
+                    return SubDirectories.Cast<object>().Concat(Files);
                 }
                 catch (UnauthorizedAccessException e) 
                 { 
