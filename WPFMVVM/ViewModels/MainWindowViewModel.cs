@@ -6,21 +6,79 @@ using WPFMVVM.ViewModels.Base;
 using OxyPlot;
 using System.Collections.ObjectModel;
 using WPFMVVM.Models.Decanat;
+using System.Windows.Data;
+using System.ComponentModel;
 
 namespace WPFMVVM.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
+        public IEnumerable<Student> TestStudentsGenerate => Enumerable.Range(1, App.IsDesignMode ? 10 : 100_000)
+            .Select(i => new Student
+            {
+                Name = $"Имя {i}",
+                Surname = $"Фамилия {i}",
+                Patronymic = $"Отчество {i}"
+            });
         public ObservableCollection<Group> Groups { get; set; }
+        public DirectoryViewModel DiskRootDir { get; } = new DirectoryViewModel("c:\\");
+        private DirectoryViewModel _SelectedDirectory;
+        public DirectoryViewModel SelectedDirectory
+        {
+            get => _SelectedDirectory;
+            set => Set(ref _SelectedDirectory, value);
+        }
+        #region Фильтр студентов
+        private readonly CollectionViewSource _SelectedGroupStudentCollection = new CollectionViewSource();
+        public ICollectionView SelectedGroupStudentsCollection => _SelectedGroupStudentCollection?.View;
+        /// <summary>Фильтр студентов</summary>
+        private string _StudentFilterText;
+        public string StudentFilterText
+        {
+            get => _StudentFilterText;
+            set
+            {
+                if (!Set(ref _StudentFilterText, value)) return;
+                _SelectedGroupStudentCollection.View.Refresh();
+            }
+        }
+        private void OnStudentsFilter(Object sender, FilterEventArgs e)
+        {
+            if (!(e.Item is Student student))
+            {
+                e.Accepted = false;
+                return;
+            }
+            if (student.Name is null || student.Surname is null)
+            {
+                e.Accepted = false;
+                return;
+            }
+            var filter_text = _StudentFilterText;
+            if (string.IsNullOrEmpty(filter_text)) return;
 
+            if (student.Name.Contains(filter_text, StringComparison.OrdinalIgnoreCase)) return;
+            if (student.Surname.Contains(filter_text, StringComparison.OrdinalIgnoreCase)) return;
+            if (student.Patronymic.Contains(filter_text, StringComparison.OrdinalIgnoreCase)) return;
+
+            e.Accepted = false;
+        }
+        #endregion
+        #region Свойства
+        #region Выбранная группа
         private Group _SelectedGroup;
         /// <summary>Выбранная группы</summary>
         public Group SelectedGroup
         {
             get => _SelectedGroup;
-            set => Set(ref _SelectedGroup, value);
+            set
+            {
+                if (!Set(ref _SelectedGroup, value)) return;
+                _SelectedGroupStudentCollection.Source = value?.Students;
+                OnPropertyChanged(nameof(SelectedGroupStudentsCollection));
+            }
         }
-        #region Свойства
+        #endregion
         #region Тестовый набор данных для графика
         private IEnumerable<MyDataPoint> _TestDataPoints;
         /// <summary>Тестовый набор данных для визуализации графиков</summary>
@@ -129,10 +187,13 @@ namespace WPFMVVM.ViewModels
             var groups = Enumerable.Range(1, 20).Select(i => new Group
             {
                 Name = $"Группа {i}",
-                Students = new ObservableCollection<Student>(students)
+                Students = new ObservableCollection<Student>(students),
+                Description = $"Описание {i} группы"
             });
             Groups = new ObservableCollection<Group>(groups);
             #endregion
+            _SelectedGroupStudentCollection.Filter += OnStudentsFilter;
+            _SelectedGroupStudentCollection.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
         }
     }
 }
