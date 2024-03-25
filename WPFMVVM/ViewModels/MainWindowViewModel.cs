@@ -21,9 +21,27 @@ namespace WPFMVVM.ViewModels
                 Patronymic = $"Отчество {i}"
             });
         public ObservableCollection<Group> Groups { get; set; }
-
+        public DirectoryViewModel DiskRootDir { get; } = new DirectoryViewModel("c:\\");
+        private DirectoryViewModel _SelectedDirectory;
+        public DirectoryViewModel SelectedDirectory
+        {
+            get => _SelectedDirectory;
+            set => Set(ref _SelectedDirectory, value);
+        }
+        #region Фильтр студентов
         private readonly CollectionViewSource _SelectedGroupStudentCollection = new CollectionViewSource();
         public ICollectionView SelectedGroupStudentsCollection => _SelectedGroupStudentCollection?.View;
+        /// <summary>Фильтр студентов</summary>
+        private string _StudentFilterText;
+        public string StudentFilterText
+        {
+            get => _StudentFilterText;
+            set
+            {
+                if (!Set(ref _StudentFilterText, value)) return;
+                _SelectedGroupStudentCollection.View.Refresh();
+            }
+        }
         private void OnStudentsFilter(Object sender, FilterEventArgs e)
         {
             if (!(e.Item is Student student))
@@ -45,18 +63,8 @@ namespace WPFMVVM.ViewModels
 
             e.Accepted = false;
         }
+        #endregion
         #region Свойства
-        /// <summary>Фильтр студентов</summary>
-        private string _StudentFilterText;
-        public string StudentFilterText
-        {
-            get => _StudentFilterText;
-            set
-            {
-                if (!Set(ref _StudentFilterText, value)) return;
-                _SelectedGroupStudentCollection.View.Refresh();
-            }
-        }
         #region Выбранная группа
         private Group _SelectedGroup;
         /// <summary>Выбранная группы</summary>

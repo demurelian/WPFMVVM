@@ -9,7 +9,8 @@
         xmlns:decanat="clr-namespace:WPFMVVM.Models.Decanat"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:oxy="http://oxyplot.org/wpf"
-        xmlns:OxyPlot="clr-namespace:OxyPlot;assembly=OxyPlot" 
+        xmlns:OxyPlot="clr-namespace:OxyPlot;assembly=OxyPlot"
+        xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         x:Class="WPFMVVM.Views.Windows.MainWindow"
         mc:Ignorable="d"
         Title="{Binding Title}" 
@@ -50,7 +51,11 @@
                             <DockPanel.Resources>
                                 <CollectionViewSource x:Key="GroupsCollection"
                                                       Source="{Binding Groups}"
-                                                      Filter="CollectionViewSource_Filter"/>
+                                                      Filter="CollectionViewSource_Filter">
+                                    <CollectionViewSource.SortDescriptions>
+                                        <cm:SortDescription PropertyName="Name" Direction="Ascending"/>
+                                    </CollectionViewSource.SortDescriptions>
+                                </CollectionViewSource>
                             </DockPanel.Resources>
                             <DockPanel DockPanel.Dock="Top" Margin="0,0,0,3">
                                 <fa:ImageAwesome Height="12" Icon="Search" Margin="3,0"/>
@@ -108,6 +113,30 @@
                                 </DataGrid.Columns>
                             </DataGrid>
                         </DockPanel>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Файловая система">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <GroupBox Grid.Column="0" Header="Директории">
+                        <TreeView ItemsSource="{Binding DiskRootDir.DirectoryItems}">
+                            <TreeView.ItemTemplate>
+                                <HierarchicalDataTemplate DataType="vm:DirectoryViewModel"
+                                                          ItemsSource="{Binding DirectoryItems}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Height="12" Icon="Folder" Foreground="Gold" Margin="0,0,3,0"/>
+                                        <TextBlock Text="{Binding Name}"/>
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+                            </TreeView.ItemTemplate>
+                        </TreeView>
+                    </GroupBox>
+                    <GroupBox Grid.Column="1" Header="Файлы">
+                        <ListBox SelectedItem="{Binding SelectedDirectory.Files, Mode=OneWay}"/>
                     </GroupBox>
                 </Grid>
             </TabItem>
