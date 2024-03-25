@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography.Pkcs;
+using System.Windows;
 using System.Windows.Input;
 using WPFMVVM.Infrastructure.Commands;
 using WPFMVVM.Models;
@@ -28,6 +29,27 @@ namespace WPFMVVM.ViewModels
             Countries = _DataService.GetData();
         }
         #endregion
+        public CountriesStatisticViewModel() : this(null)
+        {
+            if (!App.IsDesignMode)
+                throw new InvalidOperationException("ОШИБКА: Вызов конструктора, предназначенного для дизайнера");
+
+            _Countries = Enumerable.Range(1, 10)
+                .Select(i => new CountryInfo
+                {
+                    Name = $"Country {i}",
+                    Provinces = Enumerable.Range(1, 10).Select(j => new PlaceInfo
+                    {
+                        Name = $"Province {j}",
+                        Location = new Point(i, j),
+                        Counts = Enumerable.Range(1, 10).Select(k => new ConfirmedCount
+                        {
+                            Date = DateTime.Now.Subtract(TimeSpan.FromDays(100 - k)),
+                            Count = k
+                        }).ToArray()
+                    }).ToArray()
+                }).ToArray();
+        }
         public CountriesStatisticViewModel(MainWindowViewModel MainModel)
         {
             _MainModel = MainModel;

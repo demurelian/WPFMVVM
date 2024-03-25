@@ -13,7 +13,8 @@ namespace WPFMVVM.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
-        private readonly CountriesStatisticViewModel _CountriesStatisticViewModel;
+        public CountriesStatisticViewModel CountriesStatisticViewModel { get; }
+
         #region Директории
         public DirectoryViewModel DiskRootDir { get; } = new DirectoryViewModel("c:\\");
         private DirectoryViewModel _SelectedDirectory;
@@ -157,7 +158,7 @@ namespace WPFMVVM.ViewModels
         #endregion
         public MainWindowViewModel()
         {
-            _CountriesStatisticViewModel = new CountriesStatisticViewModel(this);
+            CountriesStatisticViewModel = new CountriesStatisticViewModel(this);
             #region Команды
             CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecute, CanCloseApplicationCommandExecute);
             CreateGroupCommand = new LambdaCommand(OnCreateGroupCommandExecute, CanCreateGroupCommandExecute);
