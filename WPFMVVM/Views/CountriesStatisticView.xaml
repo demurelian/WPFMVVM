@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:WPFMVVM.Views"
              xmlns:vm="clr-namespace:WPFMVVM.ViewModels"
              xmlns:m="clr-namespace:WPFMVVM.Models"
+             xmlns:c="clr-namespace:WPFMVVM.Infrastructure.Converters"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              d:DataContext="{d:DesignInstance vm:CountriesStatisticViewModel, d:IsDesignTimeCreatable=True}"
              mc:Ignorable="d" 
@@ -28,9 +29,12 @@
                          SelectedItem="{Binding SelectedCountry}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="m:CountryInfo">
+                            <DataTemplate.Resources>
+                                <c:LocationPointToStr x:Key="LocationConverter"/>
+                            </DataTemplate.Resources>
                             <TextBlock>
                                 <TextBlock Text="{Binding Name}"/>
-                                <TextBlock Text="{Binding Location}"/>
+                                <TextBlock Text="{Binding Location, Converter={StaticResource LocationConverter}, StringFormat=({0})}"/>
                             </TextBlock>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -39,11 +43,22 @@
         </GroupBox>
         <GroupBox Header="Информация" Grid.Column="1">
             <Grid>
+                <Grid.Resources>
+                    <c:Ratio K="2" x:Key="Ratio2Converter"/>
+                    <c:Linear K="5" B="3" x:Key="Linear_k5_b3_Converter"/>
+                </Grid.Resources>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <GridSplitter VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                <Slider Grid.Row="0" Name="ValueSlider" Maximum="100"
+                        ToolTip="{Binding Value, RelativeSource={RelativeSource Self}}"/>
+                <TextBox Grid.Row="0" Margin="0,30,0,0"
+                         VerticalAlignment="Top"
+                         HorizontalAlignment="Left"
+                         Width="200"
+                         Text="{Binding Value, ElementName=ValueSlider, Converter={StaticResource Ratio2Converter}, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
         </GroupBox>
     </Grid>
