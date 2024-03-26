@@ -54,19 +54,37 @@
                             <c:Linear K="3" B="4"/>
                         </c:CompositeConverter.Second>
                     </c:CompositeConverter>
+                    <c:ToArray x:Key="ToArrayConverter"/>
+                    <c:MultiSumConverter x:Key="MultiSumConverter"/>
                 </Grid.Resources>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <GridSplitter VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
-                <Slider Grid.Row="0" Name="ValueSlider" Maximum="100"
+                <StackPanel Grid.Row="0">
+                    <Slider Grid.Row="0" Name="ValueSlider1" Maximum="100" ToolTip="{Binding Value, RelativeSource={RelativeSource Self}}"/>
+                    <Slider Grid.Row="0" Name="ValueSlider2" Maximum="100" ToolTip="{Binding Value, RelativeSource={RelativeSource Self}}"/>
+                    <Slider Grid.Row="0" Name="ValueSlider3" Maximum="100" ToolTip="{Binding Value, RelativeSource={RelativeSource Self}}"/>
+                    <Slider Grid.Row="0" Name="ValueSlider4" Maximum="100" ToolTip="{Binding Value, RelativeSource={RelativeSource Self}}"/>
+                </StackPanel>
+                <TextBox Grid.Row="1">
+                    <TextBox.Text>
+                        <MultiBinding Converter="{StaticResource MultiSumConverter}" StringFormat="{}{0}">
+                            <Binding ElementName="ValueSlider1" Path="Value"/>
+                            <Binding ElementName="ValueSlider2" Path="Value"/>
+                            <Binding ElementName="ValueSlider3" Path="Value"/>
+                            <Binding ElementName="ValueSlider4" Path="Value"/>
+                        </MultiBinding>
+                    </TextBox.Text>
+                </TextBox>
+                <!--<Slider Grid.Row="0" Name="ValueSlider" Maximum="100"
                         ToolTip="{Binding Value, RelativeSource={RelativeSource Self}}"/>
                 <TextBox Grid.Row="0" Margin="0,30,0,0"
                          VerticalAlignment="Top"
                          HorizontalAlignment="Left"
                          Width="200"
-                         Text="{Binding Value, ElementName=ValueSlider, Converter={StaticResource CompositeConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                         Text="{Binding Value, ElementName=ValueSlider, Converter={StaticResource CompositeConverter}, UpdateSourceTrigger=PropertyChanged}"/>-->
             </Grid>
         </GroupBox>
     </Grid>
