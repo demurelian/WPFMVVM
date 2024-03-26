@@ -13,14 +13,9 @@ namespace WPFMVVM.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
-        public IEnumerable<Student> TestStudentsGenerate => Enumerable.Range(1, App.IsDesignMode ? 10 : 100_000)
-            .Select(i => new Student
-            {
-                Name = $"Имя {i}",
-                Surname = $"Фамилия {i}",
-                Patronymic = $"Отчество {i}"
-            });
-        public ObservableCollection<Group> Groups { get; set; }
+        public CountriesStatisticViewModel CountriesStatisticViewModel { get; }
+        
+        #region Директории
         public DirectoryViewModel DiskRootDir { get; } = new DirectoryViewModel("c:\\");
         private DirectoryViewModel _SelectedDirectory;
         public DirectoryViewModel SelectedDirectory
@@ -28,7 +23,16 @@ namespace WPFMVVM.ViewModels
             get => _SelectedDirectory;
             set => Set(ref _SelectedDirectory, value);
         }
-        #region Фильтр студентов
+        #endregion
+        #region Студенты
+        public ObservableCollection<Group> Groups { get; set; }
+        public IEnumerable<Student> TestStudentsGenerate => Enumerable.Range(1, App.IsDesignMode ? 10 : 100_000)
+            .Select(i => new Student
+            {
+                Name = $"Имя {i}",
+                Surname = $"Фамилия {i}",
+                Patronymic = $"Отчество {i}"
+            });
         private readonly CollectionViewSource _SelectedGroupStudentCollection = new CollectionViewSource();
         public ICollectionView SelectedGroupStudentsCollection => _SelectedGroupStudentCollection?.View;
         /// <summary>Фильтр студентов</summary>
@@ -117,6 +121,14 @@ namespace WPFMVVM.ViewModels
         #endregion
         #endregion
         #region Команды
+        public ICommand DrawGraph { get; }
+        private bool CanDrawGraphExecute(object p) => true;
+        private void OnDrawGraphExecute(object p)
+        {
+            MyPlotModel.Series.Clear();
+            MyPlotModel.Series.Add(new OxyPlot.Series.LineSeries { ItemsSource = TestDataPoints, DataFieldX = "XValue", DataFieldY = "YValue", Color = OxyColor.FromRgb(255, 0, 0) });
+            MyPlotModel.InvalidatePlot(true);
+        }
         #region CreateGroupCommand
         public ICommand CreateGroupCommand { get; }
         private bool CanCreateGroupCommandExecute(object p) => true;
@@ -154,7 +166,9 @@ namespace WPFMVVM.ViewModels
         #endregion
         public MainWindowViewModel()
         {
+            CountriesStatisticViewModel = new CountriesStatisticViewModel(this);
             #region Команды
+            DrawGraph = new LambdaCommand(OnDrawGraphExecute, CanDrawGraphExecute);
             CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecute, CanCloseApplicationCommandExecute);
             CreateGroupCommand = new LambdaCommand(OnCreateGroupCommandExecute, CanCreateGroupCommandExecute);
             DeleteGroupCommand = new LambdaCommand(OnDeleteGroupCommandExecute, CanDeleteDroupCommandExecute);
@@ -173,7 +187,7 @@ namespace WPFMVVM.ViewModels
             MyPlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Left });
             MyPlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Bottom });
 
-            MyPlotModel.Series.Add(new OxyPlot.Series.LineSeries { ItemsSource = TestDataPoints, DataFieldX = "XValue", DataFieldY = "YValue", Color = OxyColor.FromRgb(255, 0, 0) });
+            //MyPlotModel.Series.Add(new OxyPlot.Series.LineSeries { ItemsSource = TestDataPoints, DataFieldX = "XValue", DataFieldY = "YValue", Color = OxyColor.FromRgb(255, 0, 0) });
             #endregion
             #region Студенты
             var students = Enumerable.Range(1, 10).Select(i => new Student
@@ -191,9 +205,10 @@ namespace WPFMVVM.ViewModels
                 Description = $"Описание {i} группы"
             });
             Groups = new ObservableCollection<Group>(groups);
-            #endregion
             _SelectedGroupStudentCollection.Filter += OnStudentsFilter;
             _SelectedGroupStudentCollection.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
+            #endregion
+
         }
     }
 }
