@@ -149,8 +149,11 @@
                 </Grid>
             </TabItem>
             <TabItem Header="График">
-                <oxy:PlotView Model="{Binding MyPlotModel}">
-                </oxy:PlotView>
+                <DockPanel>
+                    <Button Content="Отрисовать график" Command="{Binding DrawGraph}" DockPanel.Dock="Top" Height="20"/>
+                    <oxy:PlotView Model="{Binding MyPlotModel}">
+                    </oxy:PlotView>
+                </DockPanel>
             </TabItem>
             <TabItem Header="Тестирование виртуализации">
                 <Grid>

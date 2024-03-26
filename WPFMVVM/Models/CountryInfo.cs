@@ -20,5 +20,31 @@ namespace WPFMVVM.Models
             set => _Location = value;
         }
         public IEnumerable<PlaceInfo> Provinces { get; set; }
+
+        private IEnumerable<ConfirmedCount> _Counts;
+        public override IEnumerable<ConfirmedCount> Counts { 
+            get
+            {
+                var provinces_quantity = Provinces.Count();
+                if (provinces_quantity == 1)
+                    return Provinces.First().Counts;
+
+                var records = Provinces.First().Counts.Count();
+                var result = Provinces.First().Counts.ToArray();
+                var provinces_arr = Provinces.ToArray();
+
+                for (int i = 0; i < provinces_quantity; i++)
+                {
+                    var temp_arr = provinces_arr[i].Counts.ToArray();
+
+                    for (int j = 1; j < records; j++)
+                    {
+                        result[j].Count += temp_arr[j].Count;
+                    }
+                }
+                return _Counts = result;
+            }
+            set => _Counts = value;
+        }
     }
 }

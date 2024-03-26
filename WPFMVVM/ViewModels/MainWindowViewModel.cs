@@ -14,12 +14,7 @@ namespace WPFMVVM.ViewModels
     internal class MainWindowViewModel : ViewModel
     {
         public CountriesStatisticViewModel CountriesStatisticViewModel { get; }
-        private CountryInfo _SelectedCountry;
-        public CountryInfo SelectedCountry
-        {
-            get => _SelectedCountry;
-            set => Set(ref _SelectedCountry, value);
-        }
+        
         #region Директории
         public DirectoryViewModel DiskRootDir { get; } = new DirectoryViewModel("c:\\");
         private DirectoryViewModel _SelectedDirectory;
@@ -126,6 +121,14 @@ namespace WPFMVVM.ViewModels
         #endregion
         #endregion
         #region Команды
+        public ICommand DrawGraph { get; }
+        private bool CanDrawGraphExecute(object p) => true;
+        private void OnDrawGraphExecute(object p)
+        {
+            MyPlotModel.Series.Clear();
+            MyPlotModel.Series.Add(new OxyPlot.Series.LineSeries { ItemsSource = TestDataPoints, DataFieldX = "XValue", DataFieldY = "YValue", Color = OxyColor.FromRgb(255, 0, 0) });
+            MyPlotModel.InvalidatePlot(true);
+        }
         #region CreateGroupCommand
         public ICommand CreateGroupCommand { get; }
         private bool CanCreateGroupCommandExecute(object p) => true;
@@ -165,6 +168,7 @@ namespace WPFMVVM.ViewModels
         {
             CountriesStatisticViewModel = new CountriesStatisticViewModel(this);
             #region Команды
+            DrawGraph = new LambdaCommand(OnDrawGraphExecute, CanDrawGraphExecute);
             CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecute, CanCloseApplicationCommandExecute);
             CreateGroupCommand = new LambdaCommand(OnCreateGroupCommandExecute, CanCreateGroupCommandExecute);
             DeleteGroupCommand = new LambdaCommand(OnDeleteGroupCommandExecute, CanDeleteDroupCommandExecute);
@@ -183,7 +187,7 @@ namespace WPFMVVM.ViewModels
             MyPlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Left });
             MyPlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Bottom });
 
-            MyPlotModel.Series.Add(new OxyPlot.Series.LineSeries { ItemsSource = TestDataPoints, DataFieldX = "XValue", DataFieldY = "YValue", Color = OxyColor.FromRgb(255, 0, 0) });
+            //MyPlotModel.Series.Add(new OxyPlot.Series.LineSeries { ItemsSource = TestDataPoints, DataFieldX = "XValue", DataFieldY = "YValue", Color = OxyColor.FromRgb(255, 0, 0) });
             #endregion
             #region Студенты
             var students = Enumerable.Range(1, 10).Select(i => new Student

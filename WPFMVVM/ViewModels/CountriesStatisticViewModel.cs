@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography.Pkcs;
+﻿using OxyPlot;
+using System.Security.Cryptography.Pkcs;
 using System.Windows;
 using System.Windows.Input;
 using WPFMVVM.Infrastructure.Commands;
@@ -50,6 +51,34 @@ namespace WPFMVVM.ViewModels
                     }).ToArray()
                 }).ToArray();
         }
+
+        private PlotModel _MyPlotModel;
+        public PlotModel MyPlotModel
+        {
+            get => _MyPlotModel;
+            set => Set(ref _MyPlotModel, value);
+        }
+        private CountryInfo _SelectedCountry;
+        public CountryInfo SelectedCountry
+        {
+            get => _SelectedCountry;
+            set
+            {
+                MyPlotModel.Series.Clear();
+                Set(ref _SelectedCountry, value);
+                MyPlotModel.Title = _SelectedCountry.Name;
+                MyPlotModel.Series.Add(new OxyPlot.Series.LineSeries
+                {
+                    StrokeThickness = 2,
+                    Color = OxyColor.FromRgb(255, 0, 0),
+                    ItemsSource = _SelectedCountry.Counts,
+                    DataFieldX = "Date",
+                    DataFieldY = "Count"
+                });
+                MyPlotModel.InvalidatePlot(true);
+            }
+        }
+
         public CountriesStatisticViewModel(MainWindowViewModel MainModel)
         {
             _MainModel = MainModel;
@@ -58,6 +87,25 @@ namespace WPFMVVM.ViewModels
             #region Команды
             RefreshDataCommand = new LambdaCommand(OnRefreshDataCommandExecute);
             #endregion
+            InitializePlotModel();
+        }
+        private void InitializePlotModel()
+        {
+            MyPlotModel = new PlotModel { Title = "Example" };
+            MyPlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis
+            {
+                Position = OxyPlot.Axes.AxisPosition.Left,
+                Title = "Число",
+                MajorGridlineStyle = LineStyle.Solid,
+                MinorGridlineStyle = LineStyle.Dash
+            });
+            MyPlotModel.Axes.Add(new OxyPlot.Axes.DateTimeAxis
+            {
+                Position = OxyPlot.Axes.AxisPosition.Bottom,
+                Title = "Дата",
+                MajorGridlineStyle = LineStyle.Solid,
+                MinorGridlineStyle = LineStyle.Dash
+            });
         }
     }
 }
