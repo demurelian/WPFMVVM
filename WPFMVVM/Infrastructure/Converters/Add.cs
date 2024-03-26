@@ -1,23 +1,27 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
-using System.Windows.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Markup;
 
 namespace WPFMVVM.Infrastructure.Converters
 {
-    [MarkupExtensionReturnType(typeof(Ratio))]
-    internal class Ratio : Converter
+    [MarkupExtensionReturnType(typeof(Add))]
+    internal class Add : Converter
     {
-        public double K { get; set; } = 1;
-        public Ratio() { }
-        public Ratio(double K) => this.K = K;
+        [ConstructorArgument("B")]
+        public double B { get; set; } = 0;
+        public Add() { }
+        public Add(double B) => this.B = B;
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is null) return null;
 
             var x = System.Convert.ToDouble(value, culture);
 
-            return x * K;
+            return x + B;
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -26,7 +30,7 @@ namespace WPFMVVM.Infrastructure.Converters
 
             var x = System.Convert.ToDouble(value, culture);
 
-            return x / K;
+            return x - B;
         }
     }
 }

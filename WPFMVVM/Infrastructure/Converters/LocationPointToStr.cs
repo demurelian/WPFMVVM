@@ -1,10 +1,12 @@
 ﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace WPFMVVM.Infrastructure.Converters
 {
     [ValueConversion(typeof(Point), typeof(string))]
+    [MarkupExtensionReturnType(typeof(LocationPointToStr))]
     internal class LocationPointToStr : Converter
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
