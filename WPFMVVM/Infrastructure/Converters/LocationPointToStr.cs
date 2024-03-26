@@ -4,6 +4,7 @@ using System.Windows.Data;
 
 namespace WPFMVVM.Infrastructure.Converters
 {
+    [ValueConversion(typeof(Point), typeof(string))]
     internal class LocationPointToStr : Converter
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)

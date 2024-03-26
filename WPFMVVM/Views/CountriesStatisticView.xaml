@@ -46,6 +46,14 @@
                 <Grid.Resources>
                     <c:Ratio K="2" x:Key="Ratio2Converter"/>
                     <c:Linear K="5" B="3" x:Key="Linear_k5_b3_Converter"/>
+                    <c:CompositeConverter x:Key="CompositeConverter">
+                        <c:CompositeConverter.First>
+                            <c:Linear K="2" B="3"/>
+                        </c:CompositeConverter.First>
+                        <c:CompositeConverter.Second>
+                            <c:Linear K="3" B="4"/>
+                        </c:CompositeConverter.Second>
+                    </c:CompositeConverter>
                 </Grid.Resources>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
@@ -58,7 +66,7 @@
                          VerticalAlignment="Top"
                          HorizontalAlignment="Left"
                          Width="200"
-                         Text="{Binding Value, ElementName=ValueSlider, Converter={StaticResource Ratio2Converter}, UpdateSourceTrigger=PropertyChanged}"/>
+                         Text="{Binding Value, ElementName=ValueSlider, Converter={StaticResource CompositeConverter}, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
         </GroupBox>
     </Grid>
