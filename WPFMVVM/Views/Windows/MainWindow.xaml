@@ -12,6 +12,7 @@
         xmlns:OxyPlot="clr-namespace:OxyPlot;assembly=OxyPlot"
         xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         xmlns:views="clr-namespace:WPFMVVM.Views"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         x:Class="WPFMVVM.Views.Windows.MainWindow"
         mc:Ignorable="d"
         Title="{Binding Title}" 
@@ -187,6 +188,9 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
                 </Grid>
+            </TabItem>
+            <TabItem Header="Отладка">
+                <TextBlock Text="{x:Static system:Environment.CurrentDirectory}"/>
             </TabItem>
         </TabControl>
     </DockPanel>
