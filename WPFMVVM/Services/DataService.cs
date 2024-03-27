@@ -1,5 +1,7 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Linq.Expressions;
 using System.Net.Http;
 using System.Windows;
 using System.Xml.Serialization;
@@ -21,14 +23,17 @@ namespace WPFMVVM.Services
 
         private static IEnumerable<string> GetDataLines()
         {
-            using var data_stream = GetDataStream().Result;
+            using var data_stream = Task.Run(GetDataStream).Result;
             using var data_reader = new StreamReader(data_stream);
 
             while (!data_reader.EndOfStream)
             {
                 var line = data_reader.ReadLine();
                 if (string.IsNullOrWhiteSpace(line)) continue;
-                yield return line.Replace("Korea,", "Korea - ");
+                yield return line
+                    .Replace("Korea,", "Korea - ")
+                    .Replace("Bonaire,", "Bonaire -")
+                    .Replace("Saint Helena,", "Saint Helena -");
             }
         }
 
@@ -46,11 +51,12 @@ namespace WPFMVVM.Services
                 .Select(line => line.Split(','));
             foreach (var row in lines)
             {
+                if (row[2].Length == 0) continue;
                 var province = row[0].Trim();
                 var country = row[1].Trim(' ', '"');
-                var latitude = double.Parse(row[2]);
-                var longtitude = double.Parse(row[3]);
-                var counts = row.Skip((row[4].Equals("-68.2385")) ? 5 : 4)//Очень странный баг, что заходило в 4й столбец, где 4е поле равно -68.2385
+                var latitude = double.Parse(row[2], CultureInfo.InvariantCulture);
+                var longtitude = double.Parse(row[3], CultureInfo.InvariantCulture);
+                var counts = row.Skip(4)
                     .Select(int.Parse)
                     .ToArray();
                 yield return (province, country, (latitude, longtitude), counts);

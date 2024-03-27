@@ -11,6 +11,7 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:OxyPlot="clr-namespace:OxyPlot;assembly=OxyPlot"
         xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        xmlns:views="clr-namespace:WPFMVVM.Views"
         x:Class="WPFMVVM.Views.Windows.MainWindow"
         mc:Ignorable="d"
         Title="{Binding Title}" 
@@ -39,6 +40,9 @@
             </StatusBarItem>
         </StatusBar>
         <TabControl>
+            <TabItem Header="Статистика">
+                <views:CountriesStatisticView DataContext="{Binding CountriesStatisticViewModel}"/>
+            </TabItem>
             <TabItem Header="Студенты">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -181,7 +185,6 @@
                     </ListBox>
                 </Grid>
             </TabItem>
-            
         </TabControl>
     </DockPanel>
 </Window>

@@ -13,14 +13,14 @@ namespace WPFMVVM.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
-        public IEnumerable<Student> TestStudentsGenerate => Enumerable.Range(1, App.IsDesignMode ? 10 : 100_000)
-            .Select(i => new Student
-            {
-                Name = $"Имя {i}",
-                Surname = $"Фамилия {i}",
-                Patronymic = $"Отчество {i}"
-            });
-        public ObservableCollection<Group> Groups { get; set; }
+        public CountriesStatisticViewModel CountriesStatisticViewModel { get; }
+        private CountryInfo _SelectedCountry;
+        public CountryInfo SelectedCountry
+        {
+            get => _SelectedCountry;
+            set => Set(ref _SelectedCountry, value);
+        }
+        #region Директории
         public DirectoryViewModel DiskRootDir { get; } = new DirectoryViewModel("c:\\");
         private DirectoryViewModel _SelectedDirectory;
         public DirectoryViewModel SelectedDirectory
@@ -28,7 +28,16 @@ namespace WPFMVVM.ViewModels
             get => _SelectedDirectory;
             set => Set(ref _SelectedDirectory, value);
         }
-        #region Фильтр студентов
+        #endregion
+        #region Студенты
+        public ObservableCollection<Group> Groups { get; set; }
+        public IEnumerable<Student> TestStudentsGenerate => Enumerable.Range(1, App.IsDesignMode ? 10 : 100_000)
+            .Select(i => new Student
+            {
+                Name = $"Имя {i}",
+                Surname = $"Фамилия {i}",
+                Patronymic = $"Отчество {i}"
+            });
         private readonly CollectionViewSource _SelectedGroupStudentCollection = new CollectionViewSource();
         public ICollectionView SelectedGroupStudentsCollection => _SelectedGroupStudentCollection?.View;
         /// <summary>Фильтр студентов</summary>
@@ -154,6 +163,7 @@ namespace WPFMVVM.ViewModels
         #endregion
         public MainWindowViewModel()
         {
+            CountriesStatisticViewModel = new CountriesStatisticViewModel(this);
             #region Команды
             CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecute, CanCloseApplicationCommandExecute);
             CreateGroupCommand = new LambdaCommand(OnCreateGroupCommandExecute, CanCreateGroupCommandExecute);
@@ -191,9 +201,10 @@ namespace WPFMVVM.ViewModels
                 Description = $"Описание {i} группы"
             });
             Groups = new ObservableCollection<Group>(groups);
-            #endregion
             _SelectedGroupStudentCollection.Filter += OnStudentsFilter;
             _SelectedGroupStudentCollection.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
+            #endregion
+
         }
     }
 }
