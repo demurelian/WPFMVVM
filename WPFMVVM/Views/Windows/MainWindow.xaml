@@ -11,8 +11,8 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:OxyPlot="clr-namespace:OxyPlot;assembly=OxyPlot"
         xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-        xmlns:views="clr-namespace:WPFMVVM.Views"
-        x:Class="WPFMVVM.Views.Windows.MainWindow"
+        xmlns:views="clr-namespace:WPFMVVM.Views" xmlns:components="clr-namespace:WPFMVVM.Components"
+    x:Class="WPFMVVM.Views.Windows.MainWindow"
         mc:Ignorable="d"
         Title="{Binding Title}" 
         Height="450" Width="800">
@@ -187,6 +187,15 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
                 </Grid>
+            </TabItem>
+            <TabItem Header="Отладка">
+                <Grid>
+                    <components:GaugeIndicator VerticalAlignment="Top" HorizontalAlignment="Left"
+                                               Width="100" Height="100"
+                                               Value="{Binding FuelCount}"/>
+                    <Slider VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="90,0,0,0" Height="30"
+                            Minimum="0" Maximum="100" Value="{Binding FuelCount}"/>
+                </Grid> 
             </TabItem>
         </TabControl>
     </DockPanel>

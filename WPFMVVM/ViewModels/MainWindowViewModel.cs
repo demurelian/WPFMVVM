@@ -14,6 +14,13 @@ namespace WPFMVVM.ViewModels
     internal class MainWindowViewModel : ViewModel
     {
         public CountriesStatisticViewModel CountriesStatisticViewModel { get; }
+
+        private double _FuelCount;
+        public double FuelCount
+        {
+            get => _FuelCount;
+            set => Set(ref _FuelCount, value);
+        }
         
         #region Директории
         public DirectoryViewModel DiskRootDir { get; } = new DirectoryViewModel("c:\\");
