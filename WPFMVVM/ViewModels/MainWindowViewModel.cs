@@ -164,9 +164,10 @@ namespace WPFMVVM.ViewModels
         private bool CanCloseApplicationCommandExecute(object p) => true;
         #endregion    
         #endregion
-        public MainWindowViewModel()
+        public MainWindowViewModel(CountriesStatisticViewModel Statistic)
         {
-            CountriesStatisticViewModel = new CountriesStatisticViewModel(this);
+            CountriesStatisticViewModel = Statistic;
+            Statistic.MainModel = this;
             #region Команды
             DrawGraph = new LambdaCommand(OnDrawGraphExecute, CanDrawGraphExecute);
             CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecute, CanCloseApplicationCommandExecute);
