@@ -1,15 +1,13 @@
-﻿using System.Diagnostics;
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
-using System.Linq.Expressions;
 using System.Net.Http;
 using System.Windows;
-using System.Xml.Serialization;
 using WPFMVVM.Models;
+using WPFMVVM.Services.Interfaces;
 
 namespace WPFMVVM.Services
 {
-    internal class DataService
+    internal class DataService : IDataService
     {
         private const string _DataSourceAdress = @"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
        

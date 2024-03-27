@@ -5,13 +5,14 @@ using System.Windows.Input;
 using WPFMVVM.Infrastructure.Commands;
 using WPFMVVM.Models;
 using WPFMVVM.Services;
+using WPFMVVM.Services.Interfaces;
 using WPFMVVM.ViewModels.Base;
 
 namespace WPFMVVM.ViewModels
 {
     internal class CountriesStatisticViewModel : ViewModel
     {
-        private DataService _DataService;
+        private IDataService _DataService;
         public MainWindowViewModel MainModel { get; internal set; }
 
         private IEnumerable<CountryInfo> _Countries;
@@ -79,7 +80,7 @@ namespace WPFMVVM.ViewModels
             }
         }
 
-        public CountriesStatisticViewModel(DataService DataService)
+        public CountriesStatisticViewModel(IDataService DataService)
         { 
             _DataService = DataService;
 
