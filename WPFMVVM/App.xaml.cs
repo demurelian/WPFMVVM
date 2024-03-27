@@ -15,11 +15,10 @@ namespace WPFMVVM
             IsDesignMode = false;
             base.OnStartup(e);
         }
-    }
-
-    public static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
-    {
-        services.AddSingleton<DataService>();
-        services.AddSingleton<CountriesStatisticViewModel>();
+        public static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
+        {
+            services.AddSingleton<DataService>();
+            services.AddSingleton<CountriesStatisticViewModel>();
+        }
     }
 }
