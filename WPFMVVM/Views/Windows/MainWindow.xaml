@@ -12,6 +12,7 @@
         xmlns:OxyPlot="clr-namespace:OxyPlot;assembly=OxyPlot"
         xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         xmlns:views="clr-namespace:WPFMVVM.Views" xmlns:components="clr-namespace:WPFMVVM.Components"
+        xmlns:converters="clr-namespace:WPFMVVM.Infrastructure.Converters"
     x:Class="WPFMVVM.Views.Windows.MainWindow"
         mc:Ignorable="d"
         Title="{Binding Title}" 
@@ -190,11 +191,23 @@
             </TabItem>
             <TabItem Header="Отладка">
                 <Grid>
+                    <Grid.Resources>
+                        <converters:ParametricMultiplyValueConverter x:Key="Mult" Value="{Binding Coefficient}"/>
+                    </Grid.Resources>
                     <components:GaugeIndicator VerticalAlignment="Top" HorizontalAlignment="Left"
-                                               Width="100" Height="100"
-                                               Value="{Binding FuelCount}"/>
+                                               Width="100" Height="100">
+                        <components:GaugeIndicator.Value>
+                            <Binding Path="FuelCount" Converter="{StaticResource Mult}">
+                            </Binding>
+                        </components:GaugeIndicator.Value>
+                    </components:GaugeIndicator>
                     <Slider VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="90,0,0,0" Height="30"
-                            Minimum="0" Maximum="100" Value="{Binding FuelCount}"/>
+                            Minimum="0" Maximum="100" Value="{Binding FuelCount}"
+                            ToolTip="{Binding FuelCount}"/>
+                    <Slider VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="90,40,0,0" Height="30"
+                            Minimum="-10" Maximum="10" SmallChange="0.1"
+                            ToolTip="{Binding Coefficient}"
+                            Value="{Binding Coefficient}"/>
                 </Grid> 
             </TabItem>
         </TabControl>

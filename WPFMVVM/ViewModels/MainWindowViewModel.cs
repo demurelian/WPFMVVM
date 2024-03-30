@@ -21,7 +21,15 @@ namespace WPFMVVM.ViewModels
             get => _FuelCount;
             set => Set(ref _FuelCount, value);
         }
-        
+
+        private double _Coefficitent = 1;
+        /// <summary>Коэффициент</summary>
+        public double Coefficient
+        {
+            get => _Coefficitent;
+            set => Set(ref _Coefficitent, value);
+        }
+
         #region Директории
         public DirectoryViewModel DiskRootDir { get; } = new DirectoryViewModel("c:\\");
         private DirectoryViewModel _SelectedDirectory;
