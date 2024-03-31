@@ -9,6 +9,7 @@ using WPFMVVM.Models.Decanat;
 using System.Windows.Data;
 using System.ComponentModel;
 using WPFMVVM.Services;
+using System.Windows.Controls;
 
 namespace WPFMVVM.ViewModels
 {
@@ -17,6 +18,27 @@ namespace WPFMVVM.ViewModels
         public CountriesStatisticViewModel CountriesStatisticViewModel { get; }
 
         private readonly IAsyncDataService _AsyncData;
+
+        public ICommand StartProcessCommand { get; }
+        private bool CanStartProcessCommandExecute(object p) => true;
+        private void OnStartProcessCommandExecute(object p)
+        {
+            DataValue = _AsyncData.GetResult(DateTime.Now);
+        }
+
+        public ICommand StopProcessCommand { get; }
+        private bool CanStopProcessCommandExecute(object p) => true;
+        private void OnStopProcessCommandExecute(object p)
+        {
+        }
+
+        private string _DataValue;
+        /// <summary>Результат длительной асинхронной операции</summary>
+        public string DataValue
+        {
+            get => _DataValue;
+            private set => Set(ref _DataValue, value);
+        }
 
         #region Директории
         public DirectoryViewModel DiskRootDir { get; } = new DirectoryViewModel("c:\\");
@@ -125,9 +147,9 @@ namespace WPFMVVM.ViewModels
         #endregion
         #endregion
         #region Команды
-        public ICommand DrawGraph { get; }
-        private bool CanDrawGraphExecute(object p) => true;
-        private void OnDrawGraphExecute(object p)
+        public ICommand DrawGraphCommand { get; }
+        private bool CanDrawGraphCommandExecute(object p) => true;
+        private void OnDrawGraphCommandExecute(object p)
         {
             MyPlotModel.Series.Clear();
             MyPlotModel.Series.Add(new OxyPlot.Series.LineSeries { ItemsSource = TestDataPoints, DataFieldX = "XValue", DataFieldY = "YValue", Color = OxyColor.FromRgb(255, 0, 0) });
@@ -174,7 +196,11 @@ namespace WPFMVVM.ViewModels
             _AsyncData = AsyncData;
             Statistic.MainModel = this;
             #region Команды
-            DrawGraph = new LambdaCommand(OnDrawGraphExecute, CanDrawGraphExecute);
+            StartProcessCommand = new LambdaCommand(OnStartProcessCommandExecute, CanStartProcessCommandExecute);
+            StopProcessCommand = new LambdaCommand(OnStopProcessCommandExecute, CanStopProcessCommandExecute);
+
+            DrawGraphCommand = new LambdaCommand(OnDrawGraphCommandExecute, CanDrawGraphCommandExecute);
+
             CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecute, CanCloseApplicationCommandExecute);
             CreateGroupCommand = new LambdaCommand(OnCreateGroupCommandExecute, CanCreateGroupCommandExecute);
             DeleteGroupCommand = new LambdaCommand(OnDeleteGroupCommandExecute, CanDeleteDroupCommandExecute);

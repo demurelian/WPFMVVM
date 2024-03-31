@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace WPFMVVM.Services
 {
-    interface IAsyncDataService
+    internal interface IAsyncDataService
     {
-
+        string GetResult(DateTime Time);
     }
 }
