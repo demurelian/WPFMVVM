@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WPFMVVM.Services
 {
-    class AsyncDataService
+    class AsyncDataService : IAsyncDataService
     {
     }
 }

@@ -8,13 +8,16 @@ using System.Collections.ObjectModel;
 using WPFMVVM.Models.Decanat;
 using System.Windows.Data;
 using System.ComponentModel;
+using WPFMVVM.Services;
 
 namespace WPFMVVM.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
         public CountriesStatisticViewModel CountriesStatisticViewModel { get; }
-        
+
+        private readonly IAsyncDataService _AsyncData;
+
         #region Директории
         public DirectoryViewModel DiskRootDir { get; } = new DirectoryViewModel("c:\\");
         private DirectoryViewModel _SelectedDirectory;
@@ -34,6 +37,7 @@ namespace WPFMVVM.ViewModels
                 Patronymic = $"Отчество {i}"
             });
         private readonly CollectionViewSource _SelectedGroupStudentCollection = new CollectionViewSource();
+
         public ICollectionView SelectedGroupStudentsCollection => _SelectedGroupStudentCollection?.View;
         /// <summary>Фильтр студентов</summary>
         private string _StudentFilterText;
@@ -164,9 +168,10 @@ namespace WPFMVVM.ViewModels
         private bool CanCloseApplicationCommandExecute(object p) => true;
         #endregion    
         #endregion
-        public MainWindowViewModel(CountriesStatisticViewModel Statistic)
+        public MainWindowViewModel(CountriesStatisticViewModel Statistic, IAsyncDataService AsyncData)
         {
             CountriesStatisticViewModel = Statistic;
+            _AsyncData = AsyncData;
             Statistic.MainModel = this;
             #region Команды
             DrawGraph = new LambdaCommand(OnDrawGraphExecute, CanDrawGraphExecute);

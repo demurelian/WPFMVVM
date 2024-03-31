@@ -9,6 +9,8 @@ namespace WPFMVVM.Services
         {
             services.AddSingleton<IDataService, DataService>();
 
+            services.AddTransient<IAsyncDataService, AsyncDataService>();
+
             return services;
         }
     }
