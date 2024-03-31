@@ -19,26 +19,11 @@ namespace WPFMVVM.ViewModels
 
         private readonly IAsyncDataService _AsyncData;
 
-        public ICommand StartProcessCommand { get; }
-        private bool CanStartProcessCommandExecute(object p) => true;
-        private void OnStartProcessCommandExecute(object p)
+        private void ComputeValue()
         {
             DataValue = _AsyncData.GetResult(DateTime.Now);
         }
-
-        public ICommand StopProcessCommand { get; }
-        private bool CanStopProcessCommandExecute(object p) => true;
-        private void OnStopProcessCommandExecute(object p)
-        {
-        }
-
-        private string _DataValue;
-        /// <summary>Результат длительной асинхронной операции</summary>
-        public string DataValue
-        {
-            get => _DataValue;
-            private set => Set(ref _DataValue, value);
-        }
+        
 
         #region Директории
         public DirectoryViewModel DiskRootDir { get; } = new DirectoryViewModel("c:\\");
@@ -95,6 +80,13 @@ namespace WPFMVVM.ViewModels
         }
         #endregion
         #region Свойства
+        private string _DataValue;
+        /// <summary>Результат длительной асинхронной операции</summary>
+        public string DataValue
+        {
+            get => _DataValue;
+            private set => Set(ref _DataValue, value);
+        }
         #region Выбранная группа
         private Group _SelectedGroup;
         /// <summary>Выбранная группы</summary>
@@ -147,6 +139,20 @@ namespace WPFMVVM.ViewModels
         #endregion
         #endregion
         #region Команды
+        public ICommand StartProcessCommand { get; }
+        private bool CanStartProcessCommandExecute(object p) => true;
+        private void OnStartProcessCommandExecute(object p)
+        {
+            new Thread(ComputeValue).Start();
+        }
+
+        public ICommand StopProcessCommand { get; }
+        private bool CanStopProcessCommandExecute(object p) => true;
+        private void OnStopProcessCommandExecute(object p)
+        {
+
+        }
+
         public ICommand DrawGraphCommand { get; }
         private bool CanDrawGraphCommandExecute(object p) => true;
         private void OnDrawGraphCommandExecute(object p)
