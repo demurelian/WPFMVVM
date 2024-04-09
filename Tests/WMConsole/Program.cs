@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Collections.Concurrent;
 
 namespace WMConsole
 {
@@ -9,24 +10,56 @@ namespace WMConsole
         {
             Thread.CurrentThread.Name = "Main thread";
 
-            var thread = new Thread(ThreadMethod);
-            thread.Name = "Other thread";
+            //var thread = new Thread(ThreadMethod);
+            //thread.Name = "Other thread";
 
-            thread.Start(42);
+            //thread.Start(42);
 
-            var count = 5;
-            var msg = "Hello";
-            var timeout = 250;
+            //var count = 5;
+            //var msg = "Hello";
+            //var timeout = 250;
 
-            new Thread(() => PrintMethod(msg, count, timeout)) { IsBackground = true }.Start();
+            //new Thread(() => PrintMethod(msg, count, timeout)) { IsBackground = true }.Start();
 
-            CheckThread();
-            
-            for(int i = 0; i < 100; i++)
+            //CheckThread();
+
+            //for(int i = 0; i < 100; i++)
+            //{
+            //    Console.WriteLine(i);
+            //    Thread.Sleep(100);
+            //}
+
+            var values = new List<int>();
+            var threads = new Thread[10];
+
+            var lock_object = new object();
+
+            for (int i = 0; i < threads.Length; i++)
             {
-                Console.WriteLine(i);
-                Thread.Sleep(100);
+                threads[i] = new Thread(() =>
+                {
+                    for (int j = 0; j < 10; j++)
+                    {
+                        lock (lock_object)
+                            values.Add(Thread.CurrentThread.ManagedThreadId);
+                    }
+                });
             }
+
+            Monitor.Enter(lock_object);
+            try
+            {
+
+            }
+            finally 
+            { 
+                Monitor.Exit(lock_object); 
+            }
+            
+
+            foreach(var thread in threads)
+                thread.Start();
+            Console.WriteLine(String.Join(",", values));
         }
 
         private static void PrintMethod(string Message, int Count, int Timeout)
