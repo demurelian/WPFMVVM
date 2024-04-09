@@ -37,10 +37,8 @@ namespace WPFMVVM
         }
         public static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
         {
-            services.AddSingleton<IDataService, DataService>();
-
-            services.AddSingleton<MainWindowViewModel>();
-            services.AddSingleton<CountriesStatisticViewModel>();
+            services.RegisterServices()
+                .RegisterViewModels();
         }
 
         public static string CurrentDirectory => IsDesignMode 
