@@ -8,18 +8,23 @@ using System.Collections.ObjectModel;
 using WPFMVVM.Models.Decanat;
 using System.Windows.Data;
 using System.ComponentModel;
+using WPFMVVM.Services;
+using System.Windows.Controls;
 
 namespace WPFMVVM.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
         public CountriesStatisticViewModel CountriesStatisticViewModel { get; }
-        private CountryInfo _SelectedCountry;
-        public CountryInfo SelectedCountry
+
+        private readonly IAsyncDataService _AsyncData;
+
+        private void ComputeValue()
         {
-            get => _SelectedCountry;
-            set => Set(ref _SelectedCountry, value);
+            DataValue = _AsyncData.GetResult(DateTime.Now);
         }
+        
+
         #region Директории
         public DirectoryViewModel DiskRootDir { get; } = new DirectoryViewModel("c:\\");
         private DirectoryViewModel _SelectedDirectory;
@@ -39,6 +44,7 @@ namespace WPFMVVM.ViewModels
                 Patronymic = $"Отчество {i}"
             });
         private readonly CollectionViewSource _SelectedGroupStudentCollection = new CollectionViewSource();
+
         public ICollectionView SelectedGroupStudentsCollection => _SelectedGroupStudentCollection?.View;
         /// <summary>Фильтр студентов</summary>
         private string _StudentFilterText;
@@ -74,6 +80,13 @@ namespace WPFMVVM.ViewModels
         }
         #endregion
         #region Свойства
+        private string _DataValue;
+        /// <summary>Результат длительной асинхронной операции</summary>
+        public string DataValue
+        {
+            get => _DataValue;
+            private set => Set(ref _DataValue, value);
+        }
         #region Выбранная группа
         private Group _SelectedGroup;
         /// <summary>Выбранная группы</summary>
@@ -126,6 +139,28 @@ namespace WPFMVVM.ViewModels
         #endregion
         #endregion
         #region Команды
+        public ICommand StartProcessCommand { get; }
+        private bool CanStartProcessCommandExecute(object p) => true;
+        private void OnStartProcessCommandExecute(object p)
+        {
+            new Thread(ComputeValue).Start();
+        }
+
+        public ICommand StopProcessCommand { get; }
+        private bool CanStopProcessCommandExecute(object p) => true;
+        private void OnStopProcessCommandExecute(object p)
+        {
+
+        }
+
+        public ICommand DrawGraphCommand { get; }
+        private bool CanDrawGraphCommandExecute(object p) => true;
+        private void OnDrawGraphCommandExecute(object p)
+        {
+            MyPlotModel.Series.Clear();
+            MyPlotModel.Series.Add(new OxyPlot.Series.LineSeries { ItemsSource = TestDataPoints, DataFieldX = "XValue", DataFieldY = "YValue", Color = OxyColor.FromRgb(255, 0, 0) });
+            MyPlotModel.InvalidatePlot(true);
+        }
         #region CreateGroupCommand
         public ICommand CreateGroupCommand { get; }
         private bool CanCreateGroupCommandExecute(object p) => true;
@@ -161,10 +196,17 @@ namespace WPFMVVM.ViewModels
         private bool CanCloseApplicationCommandExecute(object p) => true;
         #endregion    
         #endregion
-        public MainWindowViewModel()
+        public MainWindowViewModel(CountriesStatisticViewModel Statistic, IAsyncDataService AsyncData)
         {
-            CountriesStatisticViewModel = new CountriesStatisticViewModel(this);
+            CountriesStatisticViewModel = Statistic;
+            _AsyncData = AsyncData;
+            Statistic.MainModel = this;
             #region Команды
+            StartProcessCommand = new LambdaCommand(OnStartProcessCommandExecute, CanStartProcessCommandExecute);
+            StopProcessCommand = new LambdaCommand(OnStopProcessCommandExecute, CanStopProcessCommandExecute);
+
+            DrawGraphCommand = new LambdaCommand(OnDrawGraphCommandExecute, CanDrawGraphCommandExecute);
+
             CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecute, CanCloseApplicationCommandExecute);
             CreateGroupCommand = new LambdaCommand(OnCreateGroupCommandExecute, CanCreateGroupCommandExecute);
             DeleteGroupCommand = new LambdaCommand(OnDeleteGroupCommandExecute, CanDeleteDroupCommandExecute);
@@ -183,7 +225,7 @@ namespace WPFMVVM.ViewModels
             MyPlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Left });
             MyPlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Bottom });
 
-            MyPlotModel.Series.Add(new OxyPlot.Series.LineSeries { ItemsSource = TestDataPoints, DataFieldX = "XValue", DataFieldY = "YValue", Color = OxyColor.FromRgb(255, 0, 0) });
+            //MyPlotModel.Series.Add(new OxyPlot.Series.LineSeries { ItemsSource = TestDataPoints, DataFieldX = "XValue", DataFieldY = "YValue", Color = OxyColor.FromRgb(255, 0, 0) });
             #endregion
             #region Студенты
             var students = Enumerable.Range(1, 10).Select(i => new Student
